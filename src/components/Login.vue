@@ -47,6 +47,8 @@ export default {
           const { meta } = res
           if (meta.status === 200) {
             this.$message.success(meta.msg)
+            const { token } = res.data
+            localStorage.setItem('token', token)
             this.$router.push('/index')
           } else {
             this.$message.error(meta.msg)
