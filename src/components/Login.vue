@@ -15,7 +15,6 @@
   </el-form>
 </div>
 </template>
-
 <script>
 export default {
   data () {
@@ -40,32 +39,18 @@ export default {
     resetForm () {
       this.$refs.form.resetFields()
     },
-    login () {
-      this.$refs.form.validate(isValid => {
-        if (!isValid) return
-        this.$axios.post('login', this.form).then(res => {
-          const { meta } = res
-          if (meta.status === 200) {
-            this.$message.success(meta.msg)
-            const { token } = res.data
-            localStorage.setItem('token', token)
-            this.$router.push('/index')
-          } else {
-            this.$message.error(meta.msg)
-          }
-        })
-      })
+    async login () {
+      await this.$refs.form.validate()
+      const { meta, data } = await this.$axios.post('login', this.form)
+      if (meta.status === 200) {
+        this.$message.success(meta.msg)
+        const { token } = data
+        localStorage.setItem('token', token)
+        this.$router.push('/index')
+      } else {
+        this.$message.error(meta.msg)
+      }
     }
-    // async login () {
-    //   await this.$refs.form.validate()
-    //   const { meta } = await this.$axios.post('login', this.from)
-    //   if (meta.status === 200) {
-    //     this.$message.success(meta.msg)
-    //     this.$router.push('/index')
-    //   } else {
-    //     this.$message.error(meta.msg)
-    //   }
-    // }
   }
 }
 </script>
