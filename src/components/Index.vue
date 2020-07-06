@@ -8,6 +8,7 @@
     <el-container>
       <el-aside class="aside" width="200px">
         <el-menu
+          unique-opened
           router
           :default-active="defaultActive"
           background-color="#545c64"
