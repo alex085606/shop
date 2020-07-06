@@ -245,11 +245,6 @@ export default {
 
 <style lang="scss" scoped>
 #users {
-  .el-breadcrumb {
-    height: 40px;
-    line-height: 40px;
-    border-bottom: 1px solid #ccc;
-  }
   .input-with-select {
     margin-top: 10px;
     width: 300px;
