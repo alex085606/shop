@@ -32,7 +32,7 @@
         <template v-slot:default='{ row }'>
           <el-button type='primary' size='mini' plain icon='el-icon-edit' @click='showEditUserDialog(row)'></el-button>
           <el-button type='danger' size='mini' plain icon='el-icon-delete' @click='delUser(row.id)'></el-button>
-          <el-button type='success' size='mini' plain icon='el-icon-check'>分配角色</el-button>
+          <el-button type='success' size='mini' plain icon='el-icon-check' @click='showAssignRoleDialog(row)'>分配角色</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -95,6 +95,33 @@
         <el-button type="primary" @click='editUser(editForm.id)'>确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色对话框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="assignRoleDialogVisible"
+      width="40%"
+      >
+      <el-form ref="assignRoleForm" :model="assignRoleForm" label-width="80px">
+        <el-form-item label="用户名">
+          <el-tag type='info'>{{ assignRoleForm.username }}</el-tag>
+        </el-form-item>
+        <el-form-item label="角色列表">
+          <el-select v-model="assignRoleForm.rid" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="assignRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click='assignRole'>分 配</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -139,7 +166,14 @@ export default {
         mobile: [
           { pattern: /^1[3-9]\d{9}/, message: '请输入正确的手机号', trigger: ['blur', 'change'] }
         ]
-      }
+      },
+      assignRoleDialogVisible: false,
+      assignRoleForm: {
+        id: '',
+        rid: '',
+        username: ''
+      },
+      roleList: []
     }
   },
   methods: {
@@ -150,7 +184,6 @@ export default {
       if (meta.status === 200) {
         this.userList = data.users
         this.total = data.total
-        console.log(this.userList)
       } else {
         this.$message.error(meta.msg)
       }
@@ -237,6 +270,36 @@ export default {
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    async showAssignRoleDialog (row) {
+      this.assignRoleDialogVisible = true
+      this.assignRoleForm.username = row.username
+      this.assignRoleForm.id = row.id
+      const rs = await this.$axios.get(`users/${row.id}`)
+      if (rs.meta.status === 200) {
+        const rid = rs.data.rid
+        this.assignRoleForm.rid = rid === -1 ? '' : rid
+      }
+      const { data, meta } = await this.$axios.get('roles')
+      if (meta.status === 200) {
+        this.roleList = data
+        console.log('roles', this.options)
+      } else {
+        this.$message.error(meta.msg)
+      }
+    },
+    async assignRole () {
+      if (this.assignRoleForm.rid === '') {
+        this.$message.error('请选择角色')
+        return
+      }
+      const { meta } = await this.$axios.put(`users/${this.assignRoleForm.id}/role`, { rid: this.assignRoleForm.rid })
+      if (meta.status === 200) {
+        this.assignRoleDialogVisible = false
+        this.$message.success(meta.msg)
+      } else {
+        this.$message.error(meta.msg)
       }
     }
   }
