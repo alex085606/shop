@@ -4,6 +4,14 @@ import router from './router/index.js'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import moment from 'moment'
+import VueQuillEditor from 'vue-quill-editor'
+
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+
+Vue.use(VueQuillEditor /* { default global options } */)
 Vue.prototype.$axios = axios
 axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 // 添加请求拦截器，每次请求的时候带上 token
@@ -41,6 +49,10 @@ router.beforeEach((to, from, next) => {
 })
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+// 处理时间的过滤器
+Vue.filter('time', function (value) {
+  return moment(value * 1000).format('YYYY-MM-DD HH:mm:ss')
+})
 new Vue({
   router,
   render: h => h(App)
