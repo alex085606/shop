@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../components/Login.vue'
-import Index from '../components/Index.vue'
-import Users from '../components/users/Users.vue'
-import Roles from '../components/rights/Roles.vue'
-import Rights from '../components/rights/Rights.vue'
-import Categories from '../components/categories/Categories.vue'
-import Goods from '../components/products/Goods.vue'
-import GoodsAdd from '../components/products/GoodsAdd.vue'
+const Login = () => import(/* webpackChunkName: 'index' */'../components/Login.vue')
+const Index = () => import(/* webpackChunkName: 'index' */'../components/Index.vue')
+const Users = () => import(/* webpackChunkName: 'users' */'../components/users/Users.vue')
+const Roles = () => import(/* webpackChunkName: 'rights' */'../components/rights/Roles.vue')
+const Rights = () => import(/* webpackChunkName: 'rights' */'../components/rights/Rights.vue')
+const Categories = () => import(/* webpackChunkName: 'product' */'../components/categories/Categories.vue')
+const Goods = () => import(/* webpackChunkName: 'product' */'../components/products/Goods.vue')
+const GoodsAdd = () => import(/* webpackChunkName: 'product' */'../components/products/GoodsAdd.vue')
 Vue.use(VueRouter)
 // 修复重复点击同一个 item 的导航 bug
 const originalPush = VueRouter.prototype.push
